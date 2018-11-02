@@ -1,0 +1,81 @@
+firewall {
+    all-ping enable
+    broadcast-ping disable
+    config-trap disable
+    ipv6-receive-redirects disable
+    ipv6-src-route disable
+    ip-src-route disable
+    log-martians enable
+    receive-redirects disable
+    send-redirects enable
+    source-validation disable
+    syn-cookies enable
+    twa-hazards-protection disable
+}
+interfaces {
+    ethernet eth0 {
+        address 192.168.2.2/24
+        duplex auto
+        smp-affinity auto
+        speed auto
+    }
+    loopback lo {
+    }
+}
+protocols {
+    static {
+        route 192.168.1.0/24 {
+            next-hop 192.168.2.1 {
+            }
+        }
+    }
+}
+service {
+    salt-minion {
+        log_level deb
+        master 192.168.1.1
+        user root
+    }
+    ssh {
+        port 22
+    }
+}
+system {
+    config-management {
+        commit-revisions 100
+    }
+    console {
+        device ttyS0 {
+            speed 9600
+        }
+    }
+    host-name fw01.foo.bar
+    login {
+        user vyos {
+            authentication {
+                encrypted-password $6$PtlIPaPyJ$e8nwmtVmC.mo94E8gX/J64KRZbHxm//Xrg7pIMh7RKUxzJhkvi0jeG/6G5In6Mix4zOjn.oS1
+                plaintext-password ""
+            }
+            level admin
+        }
+    }
+    ntp {
+        server 0.pool.ntp.org {
+        }
+        server 1.pool.ntp.org {
+        }
+        server 2.pool.ntp.org {
+        }
+    }
+    syslog {
+        global {
+            facility all {
+                level notice
+            }
+            facility protocols {
+                level debug
+            }
+        }
+    }
+    time-zone UTC
+}
